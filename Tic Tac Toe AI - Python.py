@@ -1,4 +1,3 @@
-
 # (c) 2024 Roland Labana
 
 import random
@@ -124,6 +123,36 @@ class RandomAI:
                 possibleMoves.append(i)
         return (random.choice(possibleMoves))
 
+class JudahsCoolAI:
+    def determine_move(self, game):
+        # Lambda to check if a move is winning
+        is_winning_move = lambda symbol, move: (game.is_valid_move(move) and (game.make_temporary_move(move, symbol) and game.check_win(game.board)))
+
+        # Choose middle if available
+        if game.is_valid_move(4):
+            return 4
+
+        # heck for a winning move or block opponent's winning move
+        for symbol in ('O', 'X'):  
+            for move in range(9):
+                if is_winning_move(symbol, move):
+                    return move
+
+        #Choose corners if available using lambda 
+        corners = list(filter(lambda i: game.is_valid_move(i), [0, 2, 6, 8]))
+        if corners:
+            return random.choice(corners)
+
+        # pick a random available spot if there's no moves
+        possible_moves = list(filter(game.is_valid_move, range(9)))
+        return random.choice(possible_moves)
+
+# Add a method to make a temporary move and reset it
+def make_temporary_move(self, move, symbol):
+    original_symbol = self.board[move]
+    self.board[move] = symbol
+    return original_symbol
+  
 
 if __name__ == "__main__":
     # Here you can decide how to initialize players
@@ -136,7 +165,7 @@ if __name__ == "__main__":
     # For students' AI competition:
     player1 = HumanPlayer('X')
     #player2 = HumanPlayer('X')
-    player2 = AIPlayer('O', SimpleAI())  # Replace with student AI implementation - name function with your name ie: "Jim-AI"
+    player2 = AIPlayer('O', JudahsCoolAI())  # Replace with student AI implementation - name function with your name ie: "Jim-AI"
     #player2 = AIPlayer('X', RandomAI())  # Replace with another student AI implementation or the same for testing ie: "Mary-AI"
     game = TicTacToe(player1, player2)
     game.play()
