@@ -112,7 +112,7 @@ class RandomAI:
         possibleMoves = [i for i in range(9) if game.is_valid_move(i)]
         return random.choice(possibleMoves)
 
-class JudahsCoolAI:
+class JudahNoahCoolAI:
     def determine_move(self, game):
         # Lambda to check if a move is winning
         is_winning_move = lambda symbol, move: (game.is_valid_move(move) and game.make_temporary_move(move, symbol))
