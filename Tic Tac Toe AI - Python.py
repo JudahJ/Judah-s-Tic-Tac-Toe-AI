@@ -1,5 +1,3 @@
-# (c) 2024 Roland Labana
-
 import random
 
 class Player:
@@ -22,21 +20,18 @@ class HumanPlayer(Player):
             except ValueError:
                 print("Please enter a number.")
 
-# Template for AI Player
 class AIPlayer(Player):
     def __init__(self, symbol, strategy):
         super().__init__(symbol)
         self.strategy = strategy
 
     def make_move(self, game):
-        # Here's where students would implement their AI logic
         print(f"{self.symbol}'s AI is thinking...")
         move = self.strategy.determine_move(game)
         if game.is_valid_move(move):
             game.make_move(move, self.symbol)
         else:
             print(f"Error: Invalid move suggested by {self.symbol}'s AI. Defaulting to random move.")
-            # Default to random move if AI suggests an invalid move
             for i in range(9):
                 if game.is_valid_move(i):
                     game.make_move(i, self.symbol)
@@ -46,15 +41,13 @@ class TicTacToe:
     def __init__(self, player1, player2):
         self.board = [' ' for _ in range(9)]
         self.players = [player1, player2]
-        #self.display_board()  # Display the board initially
-
 
     def play(self):
-         while True:
+        while True:
             for player in self.players:
                 self.display_board()
                 player.make_move(self)
-                if self.check_win(game.board):
+                if self.check_win(self.board):  # Use self.board instead of game.board
                     self.display_board()
                     print(f"{player.symbol} wins!")
                     return
@@ -81,19 +74,21 @@ class TicTacToe:
         return ' ' not in self.board
 
     def display_board(self):
-        #print("\nCurrent Board State:")
         for i in range(0, 9, 3):
             print(f" {self.board[i]} | {self.board[i+1]} | {self.board[i+2]} ")
             if i < 6:
                 print("-----------")
-        print ()
+        print()
 
-        
+    def make_temporary_move(self, move, symbol):
+        original_symbol = self.board[move]
+        self.board[move] = symbol
+        is_winning = self.check_win(self.board)
+        self.board[move] = original_symbol  # Reset move
+        return is_winning
 
-# Example of a simple AI strategy - pick FIRST available space 0 - 8
 class SimpleAI:
     def determine_move(self, game):
-        # Simple strategy: check for winning move, then blocking opponent's win, then take first open space
         for i in range(9):
             if game.is_valid_move(i):
                 game.board[i] = 'X'  # Assuming this AI plays 'X'
@@ -108,64 +103,41 @@ class SimpleAI:
                     game.board[i] = ' '  # Reset for actual move
                     return i
                 game.board[i] = ' '  # Reset for next check
-        # If no immediate winning or blocking move, take first available space
         for i in range(9):
             if game.is_valid_move(i):
                 return i
-            
-# Example of a simple AI strategy - pick a RANDOM available space 0 - 8
+
 class RandomAI:
     def determine_move(self, game):
-        possibleMoves = []
-        #add all open spaces into a list to then randomly choose one
-        for i in range(9):
-            if game.is_valid_move(i):
-                possibleMoves.append(i)
-        return (random.choice(possibleMoves))
+        possibleMoves = [i for i in range(9) if game.is_valid_move(i)]
+        return random.choice(possibleMoves)
 
 class JudahsCoolAI:
     def determine_move(self, game):
         # Lambda to check if a move is winning
-        is_winning_move = lambda symbol, move: (game.is_valid_move(move) and (game.make_temporary_move(move, symbol) and game.check_win(game.board)))
-
-        # Choose middle if available
+        is_winning_move = lambda symbol, move: (game.is_valid_move(move) and game.make_temporary_move(move, symbol))
+        
+        # pick middle if u can
         if game.is_valid_move(4):
             return 4
 
-        # heck for a winning move or block opponent's winning move
+        # This'll go through every x and o with every available move to check if its winning
         for symbol in ('O', 'X'):  
             for move in range(9):
                 if is_winning_move(symbol, move):
                     return move
 
-        #Choose corners if available using lambda 
-        corners = list(filter(lambda i: game.is_valid_move(i), [0, 2, 6, 8]))
+        # pick corners if u can
+        corners = [i for i in [0, 2, 6, 8] if game.is_valid_move(i)]
         if corners:
             return random.choice(corners)
 
-        # pick a random available spot if there's no moves
-        possible_moves = list(filter(game.is_valid_move, range(9)))
+        # Pick a random available spot if there's no moves
+        possible_moves = [i for i in range(9) if game.is_valid_move(i)]
         return random.choice(possible_moves)
 
-# Add a method to make a temporary move and reset it
-def make_temporary_move(self, move, symbol):
-    original_symbol = self.board[move]
-    self.board[move] = symbol
-    return original_symbol
-  
-
 if __name__ == "__main__":
-    # Here you can decide how to initialize players
-    # For example, to test with one human and one AI:
-    # player1 = HumanPlayer('X')
-    # player2 = AIPlayer('O', SimpleAI())
-    # game = TicTacToe(player1, player2)
-    # game.play()
-
-    # For students' AI competition:
     player1 = HumanPlayer('X')
-    #player2 = HumanPlayer('X')
-    player2 = AIPlayer('O', JudahsCoolAI())  # Replace with student AI implementation - name function with your name ie: "Jim-AI"
-    #player2 = AIPlayer('X', RandomAI())  # Replace with another student AI implementation or the same for testing ie: "Mary-AI"
+    player2 = AIPlayer('O', JudahsCoolAI())
     game = TicTacToe(player1, player2)
     game.play()
