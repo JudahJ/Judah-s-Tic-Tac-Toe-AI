@@ -121,7 +121,7 @@ class JudahsCoolAI:
         if game.is_valid_move(4):
             return 4
 
-        # This'll go through every x and o with every available move to check if its winning
+        #This'll check for a winning move for both the AI and the opponent
         for symbol in ('O', 'X'):  
             for move in range(9):
                 if is_winning_move(symbol, move):
@@ -137,7 +137,7 @@ class JudahsCoolAI:
         return random.choice(possible_moves)
 
 if __name__ == "__main__":
-    player1 = HumanPlayer('X')
-    player2 = AIPlayer('O', JudahsCoolAI())
+    player1 = HumanPlayer('O')
+    player2 = AIPlayer('X', JudahsCoolAI())
     game = TicTacToe(player1, player2)
     game.play()
