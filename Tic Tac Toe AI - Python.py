@@ -113,7 +113,7 @@ class RandomAI:
         return random.choice(possibleMoves)
 
 #No Look Ahead AI
-#Priotitizes center then corners
+#Priotitizes center then corners then random spots if corners and center is taken. Follows this strat unless there is a winning move.
 class JudahsCoolAI:
     def determine_move(self, game):
         # Lambda to check if a move is winning
@@ -124,7 +124,11 @@ class JudahsCoolAI:
             return 4
 
         #This'll check for a winning move for both the AI and the opponent
-        for symbol in ('O', 'X'):  
+        if (self.symbol == 'X'):
+            opponent = 'O'
+        else:
+            opponent = 'X'
+        for symbol in (self.symbol, opponent):  
             for move in range(9):
                 if is_winning_move(symbol, move):
                     return move
