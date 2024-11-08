@@ -172,6 +172,28 @@ class JudahsCoolAI:
         # Pick a random available spot if there's no moves
         possible_moves = [i for i in range(9) if game.is_valid_move(i)]
         return random.choice(possible_moves)
+        
+class SmartRandomAI:
+    def determine_move(self, game):
+        availableMoves = []
+        if (self.symbol == 'X'):
+            opponent = 'O'
+        else:
+            opponent = 'X'
+        for i in range(9):
+            if game.is_valid_move(i):
+                    availableMoves.append(i)
+                    game.board[i] = self.symbol # Assuming this AI plays 'X'
+                    if game.check_win(game.board)==True:
+                        game.board[i] = ' '  # Reset for actual move
+                        return i
+                    game.board[i] = opponent
+                    if game.check_win(game.board)==True:
+                        game.board[i] = ' '  # Reset for actual move
+                        return i
+                    game.board[i] = ' '
+        game.board[i] = ' '
+        return (availableMoves[random.randint(0,len(availableMoves)-1)])
 
 if __name__ == "__main__":
     player1 = HumanPlayer('O')
