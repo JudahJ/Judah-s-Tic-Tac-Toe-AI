@@ -172,7 +172,8 @@ class JudahsCoolAI:
         # Pick a random available spot if there's no moves
         possible_moves = [i for i in range(9) if game.is_valid_move(i)]
         return random.choice(possible_moves)
-        
+
+#RandomAI to poke holes in other codes.
 class SmartRandomAI:
     def determine_move(self, game):
         availableMoves = []
