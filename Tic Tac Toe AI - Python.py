@@ -113,6 +113,37 @@ class RandomAI:
         return random.choice(possibleMoves)
 
 #No Look Ahead AI
+#CornerAI prioritizes opposite corners, then any corner, then the center, then random move
+class CornersAI:
+    def determine_move(self, game):
+        # Lambda to check if a move is winning
+        is_winning_move = lambda symbol, move: (game.is_valid_move(move) and game.make_temporary_move(move, symbol))
+
+        #This'll check for a winning move for both the AI and the opponent
+        if (self.symbol == 'X'):
+            opponent = 'O'
+        else:
+            opponent = 'X'
+        for symbol in (self.symbol, opponent):  
+            for move in range(9):
+                if is_winning_move(symbol, move):
+                    return move
+
+        # pick corners if u can
+        corners = [0,8,2,6]
+
+        for c in range(len(corners)):
+            if game.is_valid_move(corners[c])==True:
+                return corners[c]
+
+        # pick middle if u can
+        if game.is_valid_move(4):
+            return 4
+
+        # Pick a random available spot if there's no moves
+        possible_moves = [i for i in range(9) if game.is_valid_move(i)]
+        return random.choice(possible_moves)
+
 #Priotitizes center then corners then random spots if corners and center is taken. Follows this strat unless there is a winning move.
 class JudahsCoolAI:
     def determine_move(self, game):
