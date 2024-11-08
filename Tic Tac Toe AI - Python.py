@@ -154,12 +154,8 @@ class JudahsCoolAI:
         if game.is_valid_move(4):
             return 4
 
-        #This'll check for a winning move for both the AI and the opponent
-        if (self.symbol == 'X'):
-            opponent = 'O'
-        else:
-            opponent = 'X'
-        for symbol in (self.symbol, opponent):  
+        #This'll check for a winning move for both the AI and the opponent and also where you call the lambda
+        for symbol in ('O', 'X'):  
             for move in range(9):
                 if is_winning_move(symbol, move):
                     return move
