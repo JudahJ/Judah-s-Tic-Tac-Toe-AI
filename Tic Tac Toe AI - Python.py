@@ -79,7 +79,7 @@ class TicTacToe:
             if i < 6:
                 print("-----------")
         print()
-
+    #Helper function for JudahsCoolAI
     def make_temporary_move(self, move, symbol):
         original_symbol = self.board[move] #Have a place to keep what the original board looks like withouto making a move
         self.board[move] = symbol #This is having the player "move" to a pos on the board. The player doesn't actually move
