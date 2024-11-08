@@ -112,6 +112,8 @@ class RandomAI:
         possibleMoves = [i for i in range(9) if game.is_valid_move(i)]
         return random.choice(possibleMoves)
 
+#No Look Ahead AI
+#Priotitizes center then corners
 class JudahsCoolAI:
     def determine_move(self, game):
         # Lambda to check if a move is winning
