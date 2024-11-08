@@ -81,10 +81,10 @@ class TicTacToe:
         print()
 
     def make_temporary_move(self, move, symbol):
-        original_symbol = self.board[move]
-        self.board[move] = symbol
-        is_winning = self.check_win(self.board)
-        self.board[move] = original_symbol  # Reset move
+        original_symbol = self.board[move] #Have a place to keep what the original board looks like withouto making a move
+        self.board[move] = symbol #This is having the player "move" to a pos on the board. The player doesn't actually move
+        is_winning = self.check_win(self.board) #Check if that player move is a winning one
+        self.board[move] = original_symbol  # reset it back to its original state
         return is_winning
 
 class SimpleAI:
@@ -115,7 +115,7 @@ class RandomAI:
 class JudahsCoolAI:
     def determine_move(self, game):
         # Lambda to check if a move is winning
-        is_winning_move = lambda symbol, move: (game.is_valid_move(move) and game.make_temporary_move(move, symbol))
+        is_winning_move = lambda symbol, move: (game.is_valid_move(move) and game.make_temporary_move(move, symbol)) #It doesn't know move and symbol yet until we call it with the values
         
         # pick middle if u can
         if game.is_valid_move(4):
