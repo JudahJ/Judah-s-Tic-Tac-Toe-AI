@@ -169,6 +169,30 @@ class JudahsCoolAI:
         possible_moves = [i for i in range(9) if game.is_valid_move(i)]
         return random.choice(possible_moves)
 
+class JudahsMiniMax:
+    def generate_move_tree(self, symbol, depth):
+        if depth == 0 or self.is_board_full() or self.check_win(self.board):
+            return None  
+        
+        move_tree = {}
+        for i in range(9):
+            if self.is_valid_move(i):
+                #make a move on the board
+                self.board[i] = symbol
+                
+                #childeren nodes
+                if symbol == 'X':
+                    next_symbol = 'O'
+                else:
+                    next_symbol = 'X'
+                    
+                move_tree[i] = self.generate_move_tree(next_symbol, depth - 1)
+                
+                #delete the move
+                self.board[i] = ' '
+        
+        return move_tree
+        
 #RandomAI to poke holes in other codes.
 class SmartRandomAI:
     def determine_move(self, game):
