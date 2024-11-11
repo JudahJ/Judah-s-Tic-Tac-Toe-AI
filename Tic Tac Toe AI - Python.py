@@ -169,6 +169,7 @@ class JudahsCoolAI:
         possible_moves = [i for i in range(9) if game.is_valid_move(i)]
         return random.choice(possible_moves)
 
+###RIGHT NOW YOU HAVE TO HARDCODE DEPTH. IT DOESN'T HAVE USER INPUT YET
 class JudahsMiniMax:
     def generate_move_tree(self, symbol, depth):
         if depth == 0 or self.is_board_full() or self.check_win(self.board):
