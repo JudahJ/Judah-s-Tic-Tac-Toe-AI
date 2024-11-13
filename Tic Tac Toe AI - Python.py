@@ -173,57 +173,49 @@ class JudahsCoolAI:
         return random.choice(possible_moves)
 
 class JudahsMiniMax:
-    
-    def generate_move_tree(self, symbol, depth):
-        if depth == 0 or self.is_board_full() or self.check_win(self.board):
-            return None  
-        
-        move_tree = {}
+    def determine_move(self, game):
+        best_score = -float("inf")
+        best_move = None
+
         for i in range(9):
-            if self.is_valid_move(i):
-                #make a move on the board
-                self.board[i] = symbol
-                
-                #childeren nodes
-                if symbol == 'X':
-                    next_symbol = 'O'
-                else:
-                    next_symbol = 'X'
-                
-                move_tree[i] = self.generate_move_tree(next_symbol, depth - 1)
-                
-                #delete the move
-                self.board[i] = ' '
-        
-        return move_tree
-    
-    def minimax(self, symbol, depth):
-        winner = self.check_win(self.board)
+            if game.is_valid_move(i):
+                game.board[i] = 'O'  # Assume 'O' is the AI's symbol
+                score = self.minimax(game, is_maximizing=False)
+                game.board[i] = ' '  # Undo move
+                if score > best_score:
+                    best_score = score
+                    best_move = i
+
+        return best_move
+
+    def minimax(self, game, is_maximizing):
+        winner = game.check_win(game.board)
         if winner == 'O':
-            return 1  #O wins
+            return 1  # AI wins
         elif winner == 'X':
-            return -1  #x wins
-        elif self.is_board_full() or depth == 0:
-            return 0  #tie
-        if symbol == 'O':
+            return -1  # Opponent wins
+        elif game.is_board_full():
+            return 0  # Tie
+
+        if is_maximizing:
             best_score = -float("inf")
-            for i in range (9):
-                if self.is_valid_move(i):
-                    self.board[i] = symbol
-                    score = self.minimax('X', depth - 1)
-                    self.board[i] = ' ' #delete the symbol for this iteration
+            for i in range(9):
+                if game.is_valid_move(i):
+                    game.board[i] = 'O'  # AI's symbol
+                    score = self.minimax(game, is_maximizing=False)
+                    game.board[i] = ' '  # Undo move
                     best_score = max(score, best_score)
+            return best_score
         else:
             best_score = float("inf")
-            for i in range (9):
-                if self.is_valid_move(i):
-                    self.board[i] = symbol
-                    score = self.minimax('O', depth - 1)
-                    self.board[i] = ' ' #delete the symbol for this iteration
-                    best_score = max(score, best_score)      
-            
-        
-    
+            for i in range(9):
+                if game.is_valid_move(i):
+                    game.board[i] = 'X'  # Opponent's symbol
+                    score = self.minimax(game, is_maximizing=True)
+                    game.board[i] = ' '  # Undo move
+                    best_score = min(score, best_score)
+            return best_score
+
 
 #RandomAI to poke holes in other codes.
 class SmartRandomAI:
