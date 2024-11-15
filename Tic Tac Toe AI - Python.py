@@ -215,7 +215,7 @@ class JudahsMiniMax:
                     game.board[i] = ' '  # Undo move
                     best_score = max(score, best_score)
             return best_score
-        if is_maximizing = False:
+        if is_maximizing == False:
             best_score = float("inf")
             for i in range(9):
                 if game.is_valid_move(i):
