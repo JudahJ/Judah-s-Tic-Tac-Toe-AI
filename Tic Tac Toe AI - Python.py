@@ -86,7 +86,16 @@ class TicTacToe:
         is_winning = self.check_win(self.board) #Check if that player move is a winning one
         self.board[move] = original_symbol  # reset it back to its original state
         return is_winning
-    
+        
+    def checkPlayer(self):
+        availableMoves = []
+        for i in range(9):
+            if self.is_valid_move(i):
+                availableMoves.append(i)
+        if (len(availableMoves)%2 == 0):
+            return 1
+        else:
+            return 0
     
 
 
@@ -197,7 +206,7 @@ class JudahsMiniMax:
         elif game.is_board_full():
             return 0  # Tie
 
-        if is_maximizing:
+        if is_maximizing == True:
             best_score = -float("inf")
             for i in range(9):
                 if game.is_valid_move(i):
@@ -206,7 +215,7 @@ class JudahsMiniMax:
                     game.board[i] = ' '  # Undo move
                     best_score = max(score, best_score)
             return best_score
-        else:
+        if is_maximizing = False:
             best_score = float("inf")
             for i in range(9):
                 if game.is_valid_move(i):
