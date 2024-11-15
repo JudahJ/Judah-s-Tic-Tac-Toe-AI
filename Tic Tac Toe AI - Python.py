@@ -184,47 +184,83 @@ class JudahsCoolAI:
 class JudahsMiniMax:
     def determine_move(self, game):
         best_score = -float("inf")
-        best_move = None
+        best_move = []
+        is_maximizing = None
+        availableMoves = []
+        score = -5
+
+        AIsym = game.players[game.checkPlayer()].symbol
+
+        if AIsym == 'O':
+            is_maximizing = True
+        else:
+            is_maximizing = False
+            best_score = float("inf")
+        
 
         for i in range(9):
             if game.is_valid_move(i):
-                game.board[i] = 'O'  # Assume 'O' is the AI's symbol
-                score = self.minimax(game, is_maximizing=False)
+                availableMoves.append(i)
+                game.board[i] = AIsym  # Assume 'O' is the AI's symbol
+                score = self.minimax(game, is_maximizing)
                 game.board[i] = ' '  # Undo move
-                if score > best_score:
+                if is_maximizing == True and best_score <= score:
                     best_score = score
-                    best_move = i
+                    best_move.append(i)
+                if is_maximizing == False and best_score >= score:
+                    if best_score > score:
+                        best_move = []
+                        print(best_move)
+                    best_score = score
+                    best_move.append(i)
 
-        return best_move
+        if len(best_move) == 0:
+            print("None", best_score, score)
+            print(is_maximizing)
+            best_move = availableMoves[random.randint(0,len(availableMoves)-1)]
+        
+        print(best_move, best_score, is_maximizing)
+
+        return best_move[random.randint(0,len(best_move)-1)]
 
     def minimax(self, game, is_maximizing):
         winner = game.check_win(game.board)
-        if winner == 'O':
+        opp = ' '
+        if winner == True and is_maximizing == True:
             return 1  # AI wins
-        elif winner == 'X':
+        if winner == True and is_maximizing == False:
             return -1  # Opponent wins
-        elif game.is_board_full():
+        if game.is_board_full():
             return 0  # Tie
+        
+        p = game.players[game.checkPlayer()].symbol
+        
+        if p == 'O':
+            opp = 'X'
+        else:
+            opp = 'O'
 
-        if is_maximizing == True:
+        if is_maximizing == False:
             best_score = -float("inf")
             for i in range(9):
                 if game.is_valid_move(i):
-                    game.board[i] = 'O'  # AI's symbol
-                    score = self.minimax(game, is_maximizing=False)
+                    game.board[i] = opp  # AI's symbol
+                    score = self.minimax(game, True)
                     game.board[i] = ' '  # Undo move
                     best_score = max(score, best_score)
+            
+            print(best_score,p)
             return best_score
-        if is_maximizing == False:
+        if is_maximizing == True:
             best_score = float("inf")
             for i in range(9):
                 if game.is_valid_move(i):
-                    game.board[i] = 'X'  # Opponent's symbol
-                    score = self.minimax(game, is_maximizing=True)
+                    game.board[i] = opp  # Opponent's symbol
+                    score = self.minimax(game, False)
                     game.board[i] = ' '  # Undo move
                     best_score = min(score, best_score)
+            print(best_score,p)        
             return best_score
-
 
 #RandomAI to poke holes in other codes.
 class SmartRandomAI:
