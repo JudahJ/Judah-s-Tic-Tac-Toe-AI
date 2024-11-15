@@ -199,6 +199,8 @@ class JudahsMiniMax:
         elif block:
             print(block, best_moves)
             return block[0]
+        if game.is_valid_move(4):
+            return 4
 
         for i in range(9):
             if game.is_valid_move(i):
