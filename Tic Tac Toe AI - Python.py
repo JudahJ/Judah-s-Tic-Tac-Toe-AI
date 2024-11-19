@@ -86,6 +86,16 @@ class TicTacToe:
         is_winning = self.check_win(self.board) #Check if that player move is a winning one
         self.board[move] = original_symbol  # reset it back to its original state
         return is_winning
+        
+    def checkPlayer(self):
+        availableMoves = []
+        for i in range(9):
+            if self.is_valid_move(i):
+                availableMoves.append(i)
+        if (len(availableMoves)%2 == 0):
+            return 1
+        else:
+            return 0
     
     
 
