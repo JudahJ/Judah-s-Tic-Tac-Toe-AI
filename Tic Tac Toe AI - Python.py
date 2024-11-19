@@ -284,6 +284,6 @@ class SmartRandomAI:
 
 if __name__ == "__main__":
     player1 = HumanPlayer('O')
-    player2 = AIPlayer('X', JudahsMiniMax())
+    player2 = AIPlayer('X', NoahJudahMiniMax())
     game = TicTacToe(player1, player2)
     game.play()
