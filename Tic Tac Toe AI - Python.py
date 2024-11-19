@@ -218,7 +218,6 @@ class NoahJudahMiniMax:
                     best_score = score
                     best_move.append(i)
 
-        print(best_move)
 
         if len(best_move) == 0:
             return availableMoves[random.randint(0,len(availableMoves)-1)]
@@ -232,7 +231,6 @@ class NoahJudahMiniMax:
             else:
                 return 1  # Opponent wins
         elif game.is_board_full() or level == 0:
-            print(level)
             return 0  # Tie
         
         p = game.players[game.checkPlayer()].symbol
