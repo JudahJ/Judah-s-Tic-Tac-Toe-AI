@@ -205,7 +205,7 @@ class NoahJudahMiniMax:
             if game.is_valid_move(i):
                 availableMoves.append(i)
                 game.board[i] = AIsym  # Assume 'O' is the AI's symbol
-                score = self.minimax(game, is_maximizing)
+                score = self.minimax(game, is_maximizing, 5)
                 game.board[i] = ' '  # Undo move
                 if is_maximizing and best_score >= score:
                     if score < best_score:
@@ -218,18 +218,21 @@ class NoahJudahMiniMax:
                     best_score = score
                     best_move.append(i)
 
+        print(best_move)
+
         if len(best_move) == 0:
-            best_move = availableMoves[random.randint(0,len(availableMoves)-1)]
+            return availableMoves[random.randint(0,len(availableMoves)-1)]
         
         return best_move[random.randint(0,len(best_move)-1)]
 
-    def minimax(self, game, is_maximizing):
+    def minimax(self, game, is_maximizing, level):
         if game.check_win(game.board):
             if is_maximizing:
                 return -1  # AI wins
             else:
                 return 1  # Opponent wins
-        elif game.is_board_full():
+        elif game.is_board_full() or level == 0:
+            print(level)
             return 0  # Tie
         
         p = game.players[game.checkPlayer()].symbol
@@ -239,7 +242,7 @@ class NoahJudahMiniMax:
             for i in range(9):
                 if game.is_valid_move(i):
                     game.board[i] = 'O'  # Opponent's symbol
-                    score = self.minimax(game, False)
+                    score = self.minimax(game, False, level-1)
                     game.board[i] = ' '  # Undo move
                     best_score = max(score, best_score)
 
@@ -250,7 +253,7 @@ class NoahJudahMiniMax:
             for i in range(9):
                 if game.is_valid_move(i):
                     game.board[i] = 'X'  # AI's symbol
-                    score = self.minimax(game, True)
+                    score = self.minimax(game, True, level-1)
                     game.board[i] = ' '  # Undo move
                     best_score = min(score, best_score)
                     #print(best_score,p,i)
