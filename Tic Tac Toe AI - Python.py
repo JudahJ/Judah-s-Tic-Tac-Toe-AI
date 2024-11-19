@@ -174,78 +174,76 @@ class JudahsCoolAI:
 
 
 
-class JudahsMiniMax:        
-                
+class NoahJudahMiniMax:
     def determine_move(self, game):
-        is_winning_move = lambda symbol, move: (game.is_valid_move(move) and game.make_temporary_move(move, symbol)) #It doesn't know move and symbol yet until we call it with the values
-        win=[]
-        block = []
-        #This'll check for a winning move for both the AI and the opponent and also where you call the lambda
-        for symbol in ('X', 'O'):  
-            for move in range(9):
-                if is_winning_move(symbol, move):
-                    if symbol == self:
-                        win.append(move)
-                        win.append(symbol)
-                    else:
-                        block.append(move)
-                        block.append(symbol)
-        best_score = -float("inf")
-        best_moves = []
+        best_score = float("inf")
+        best_move = []
+        is_maximizing = None
+        availableMoves = []
+        score = 0
 
-        if win:
-            print(win, best_moves)
-            return win[0]
-        elif block:
-            print(block, best_moves)
-            return block[0]
-        if game.is_valid_move(4):
-            return 4
+        AIsym = game.players[game.checkPlayer()].symbol
 
+        if AIsym == 'X':
+            is_maximizing = True
+        else:
+            is_maximizing = False
+            best_score = -float("inf")
+        
         for i in range(9):
             if game.is_valid_move(i):
-                game.board[i] = 'O'  # Assume 'O' is the AI's symbol
-                score = self.minimax(game, False)
+                availableMoves.append(i)
+                game.board[i] = AIsym  # Assume 'O' is the AI's symbol
+                score = self.minimax(game, is_maximizing)
                 game.board[i] = ' '  # Undo move
-
-                if score > best_score:
+                if is_maximizing and best_score >= score:
+                    if score < best_score:
+                        best_move = []
                     best_score = score
-                    best_moves = [i]  #list of best moves
-                else:
-                    if len(win) != 0:
-                        best_moves.append(i)  
-        
+                    best_move.append(i)
+                if not is_maximizing and best_score <= score:
+                    if best_score < score:
+                        best_move = []
+                    best_score = score
+                    best_move.append(i)
 
+        if len(best_move) == 0:
+            best_move = availableMoves[random.randint(0,len(availableMoves)-1)]
         
-        return random.choice(best_moves) #choose the move best move possible that will lead you to a winning move
-        
+        return best_move[random.randint(0,len(best_move)-1)]
 
     def minimax(self, game, is_maximizing):
-        winner = game.check_win(game.board)
-        if winner == 'O':
-            return 1  #AI wins
-        elif winner == 'X':
-            return -1  #Opponent wins
+        if game.check_win(game.board):
+            if is_maximizing:
+                return -1  # AI wins
+            else:
+                return 1  # Opponent wins
         elif game.is_board_full():
-            return 0  #Tie
+            return 0  # Tie
+        
+        p = game.players[game.checkPlayer()].symbol
+        
         if is_maximizing:
             best_score = -float("inf")
-            
             for i in range(9):
                 if game.is_valid_move(i):
-                    game.board[i] = 'O'  #AI symbol
+                    game.board[i] = 'O'  # Opponent's symbol
                     score = self.minimax(game, False)
                     game.board[i] = ' '  # Undo move
                     best_score = max(score, best_score)
+
             return best_score
-        else:
+
+        if not is_maximizing:
             best_score = float("inf")
             for i in range(9):
                 if game.is_valid_move(i):
-                    game.board[i] = 'X'  #Opponent symbol
+                    game.board[i] = 'X'  # AI's symbol
                     score = self.minimax(game, True)
-                    game.board[i] = ' '  #Undo move
+                    game.board[i] = ' '  # Undo move
                     best_score = min(score, best_score)
+                    #print(best_score,p,i)
+            
             return best_score
 
 
