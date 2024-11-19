@@ -173,13 +173,14 @@ class JudahsCoolAI:
         return random.choice(possible_moves)
 
 
-
+#Minimax AI
 class NoahJudahMiniMax:
+
     def determine_move(self, game):
         best_score = float("inf")
-        best_move = []
-        is_maximizing = None
-        availableMoves = []
+        best_move = [] #List of all the best moves
+        is_maximizing = None #Decides if we are maximizing or not
+        availableMoves = [] #All moves that are available
         score = 0
 
         AIsym = game.players[game.checkPlayer()].symbol
