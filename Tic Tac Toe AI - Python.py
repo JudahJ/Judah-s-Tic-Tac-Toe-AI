@@ -182,9 +182,12 @@ class JudahsCoolAI:
         possible_moves = [i for i in range(9) if game.is_valid_move(i)]
         return random.choice(possible_moves)
 
-
-#Minimax AI
+#Minimax AI. With Depth Control
 class NoahJudahMiniMax:
+
+    def __init__(self, max_depth=None):
+        self.max_depth = max_depth
+        pass 
 
     def determine_move(self, game):
         best_score = float("inf")
@@ -205,7 +208,7 @@ class NoahJudahMiniMax:
             if game.is_valid_move(i):
                 availableMoves.append(i)
                 game.board[i] = AIsym  # Assume 'O' is the AI's symbol
-                score = self.minimax(game, is_maximizing, 5)
+                score = self.minimax(game, is_maximizing, self.max_depth)
                 game.board[i] = ' '  # Undo move
                 if is_maximizing and best_score >= score:
                     if score < best_score:
@@ -230,8 +233,11 @@ class NoahJudahMiniMax:
                 return -1  # AI wins
             else:
                 return 1  # Opponent wins
-        elif game.is_board_full() or level == 0:
-            return 0  # Tie
+        else:
+            if game.is_board_full():
+                return 0  # Tie
+            if (level == 0):
+                return 0
         
         p = game.players[game.checkPlayer()].symbol
         
@@ -285,6 +291,6 @@ class SmartRandomAI:
 
 if __name__ == "__main__":
     player1 = HumanPlayer('O')
-    player2 = AIPlayer('X', NoahJudahMiniMax())
+    player2 = AIPlayer('X', NoahJudahMiniMax(9))
     game = TicTacToe(player1, player2)
     game.play()
