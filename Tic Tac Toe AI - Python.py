@@ -225,6 +225,87 @@ class JudahsMiniMax:
                     best_score = min(score, best_score)
             return best_score
 
+#Minimax only. With depth control.
+class NoahJudahMiniMax:
+
+    def __init__(self, max_depth=None):
+        self.max_depth = max_depth
+        pass 
+
+    def determine_move(self, game):
+        best_score = float("inf")
+        best_move = [] #List of all the best moves
+        is_maximizing = None #Decides if we are maximizing or not
+        availableMoves = [] #All moves that are available
+        score = 0
+
+        AIsym = game.players[game.checkPlayer()].symbol
+
+        if AIsym == 'X':
+            is_maximizing = True
+        else:
+            is_maximizing = False
+            best_score = -float("inf")
+        
+        for i in range(9):
+            if game.is_valid_move(i):
+                availableMoves.append(i)
+                game.board[i] = AIsym  # Assume 'O' is the AI's symbol
+                score = self.minimax(game, is_maximizing, self.max_depth)
+                game.board[i] = ' '  # Undo move
+                if is_maximizing and best_score >= score:
+                    if score < best_score:
+                        best_move = []
+                    best_score = score
+                    best_move.append(i)
+                if not is_maximizing and best_score <= score:
+                    if best_score < score:
+                        best_move = []
+                    best_score = score
+                    best_move.append(i)
+
+
+        if len(best_move) == 0:
+            return availableMoves[random.randint(0,len(availableMoves)-1)]
+        
+        return best_move[random.randint(0,len(best_move)-1)]
+
+    def minimax(self, game, is_maximizing, level):
+        if game.check_win(game.board):
+            if is_maximizing:
+                return -1  # AI wins
+            else:
+                return 1  # Opponent wins
+        else:
+            if game.is_board_full():
+                return 0  # Tie
+            if (level == 0):
+                return 0
+        
+        p = game.players[game.checkPlayer()].symbol
+        
+        if is_maximizing:
+            best_score = -float("inf")
+            for i in range(9):
+                if game.is_valid_move(i):
+                    game.board[i] = 'O'  # Opponent's symbol
+                    score = self.minimax(game, False, level-1)
+                    game.board[i] = ' '  # Undo move
+                    best_score = max(score, best_score)
+
+            return best_score
+
+        if not is_maximizing:
+            best_score = float("inf")
+            for i in range(9):
+                if game.is_valid_move(i):
+                    game.board[i] = 'X'  # AI's symbol
+                    score = self.minimax(game, True, level-1)
+                    game.board[i] = ' '  # Undo move
+                    best_score = min(score, best_score)
+                    #print(best_score,p,i)
+            
+            return best_score
 
 #RandomAI to poke holes in other codes.
 class SmartRandomAI:
@@ -252,5 +333,6 @@ class SmartRandomAI:
 if __name__ == "__main__":
     player1 = HumanPlayer('O')
     player2 = AIPlayer('X', JudahsMiniMax())
+    #player2 = AIPlayer('X', NoahJudahMiniMax(9))
     game = TicTacToe(player1, player2)
     game.play()
