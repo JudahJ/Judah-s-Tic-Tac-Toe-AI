@@ -181,6 +181,7 @@ class JudahsCoolAI:
         possible_moves = [i for i in range(9) if game.is_valid_move(i)]
         return random.choice(possible_moves)
 
+#Minimax Prototype.
 class JudahsMiniMax:
     def determine_move(self, game):
         best_score = -float("inf")
@@ -225,7 +226,7 @@ class JudahsMiniMax:
                     best_score = min(score, best_score)
             return best_score
 
-#Minimax only. With depth control.
+#Minimax. With depth control.
 class NoahJudahMiniMax:
 
     def __init__(self, max_depth=None):
